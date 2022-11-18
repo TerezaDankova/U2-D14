@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-    <title>Oline Bussiness!</title>
+    <title>Online Bussiness!</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,25 +20,37 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="#./index.html">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="#./backoffice.html">Backoffice</a>
           </li>
         </ul>
       </div>
     </nav>
 
     <h1>Online Shop!</h1>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10 mt5">
+          <h4 class="mb-3"></h4>
+          <div id="event-details">
+            <h1 class="font-weight-bold">Event Name</h1>
+            <p class="text-monospace">02/12/2020</p>
+            <p>Event description</p>
+            <h6 class="pl-2 py-3 bg-light">Server details</h6>
+            <ul class="list-group list-group-flush">
+              
+              <li class="list-group-item pl-2"><b>id:</b>666777565</li>
+              <li class="list-group-item pl-2"><b>createdAt</b>7652245</li>
+              <li class="list-group-item pl-2"><b>eatedAt</b>76522yad45</li>
+              
+            </ul>
 
-    <div class="card" style="width: 18rem;">
-      <ul class="list-group list-group-flush">
-        <!--
-        <li class="list-group-item"><img src="..." class="img-thumbnail" alt="...">First Product</li>
-        <li class="list-group-item">Second Poduct</li>
-        <li class="list-group-item">Thirt Product</li>
-        -->
-      </ul>
+            <button class="btn btn-success" onclick="handleclick()">Edit Events</button>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -71,55 +83,36 @@
           "updatedAt": "2019-07-19T09:32:10.535Z", //SERVER GENERATED
           "__v": 0 //SERVER GENERATED
         }
-      */
-
-
    
 
-    const displayProduct = (array) => {
+      const eventId = new URLSearchParams(window.location.search).get("eventId")
 
-    const ul = document.querySelector(".list-group")
+      window.onload = async () => {
+        const response = await fetch("https://striveschool-api.herokuapp.com/api/product/" + eventId)
+        const eventObj = await response.json()
+        const {name, _id, description , createdAt, updatedAt } = eventObj
 
-    if (Array.isArray(array)){
-      array.forEach(product => {
-        const li = document.createElement("li")
-        li.className = ".list-group-item d-flex flex-wrap align-items-center"
-        li.innerHTML = `<li class="list-group-item"><img src="${product.imageUrl}" class="img-thumbnail" alt="...">${product.brand}<a href="#">DETAILS</a></li>`
+        console.log(eventObj)
 
-        ul.appendChild(li)
-      })
-    } else {
-      alert("Missing array")
-}
-}
-      const getEvents = async () => {
+        const container = document.getElementById("event-details")
+        container.innerHTML = `   <h1 class="font-weight-bold">${name}</h1>
+                                  <p class="text-monospace">${_id}</p>
+                                  <p>${description}</p>
+                                  <h6 class="pl-2 py-3 bg-light">Server details</h6>
+                                  <ul class="list-group list-group-flush">
+                                    
+                                    <li class="list-group-item pl-2"><b>id:</b>666777565</li>
+                                    <li class="list-group-item pl-2"><b>createdAt</b>${new Date(createdAt).toLocaleString("GER")}</li>
+                                    <li class="list-group-item pl-2"><b>updatedAt</b>${new Date(updatedAt).toLocaleString("GER")}</li>
+                                    
+                                  </ul>
 
-
-      const response = await fetch("https://striveschool-api.herokuapp.com/api/product/", {
-                                    method: 'POST',
-                                    headers: {
-                                    "Content-Type": "application/json",
-                                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzA3NmQ3NDFlYjc2ZDAwMTUxNTAxODMiLCJpYXQiOjE2NjE0MzExNTcsImV4cCI6MTY2MjY0MDc1N30.-kjJoUsmxxBy63AvL6lL5c8vFlvmPug2xN32FiZPo40"
-                                    }
-                                    })
-      if (response.ok) {
-        const productList = await response.json()
-        return productList
+                                  <button class="btn btn-success">Edit Events</button>`
       }
+      const handleClick = () => {
+        window.location.assign("./backoffice.html?eventId=" + eventId)
       }
-
-
-    window.onload = () => {
-      getEvents().then(productList => displayProduct(productList))
-
-      console.log("LAST")
-  
-    }
-
-
-
-
-
+      */
     </script>
   </body>
 </html>

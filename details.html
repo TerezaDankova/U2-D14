@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <title>CRUD Agenda</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid px-5">
+            <a class="navbar-brand" href="#">CRUD Agenda</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./backoffice.html">Backoffice</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <img src="https://images.unsplash.com/photo-1529651737248-dad5e287768e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1301&q=80"
+        alt="event image" style=" max-width: 100%;
+        max-height: 30vh;
+        width: 100%;
+        object-fit: cover;">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h6 class="mb-3">Event Details</h6>
+                <div id="eventDetails" class="mb-5">
+                    <div class="spinner-grow text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <!-- <h1 class="font-weight-bold">Event Name</h1>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis, numquam, optio rem officia
+                        similique pariatur ipsam velit suscipit, alias dolorem ex? Aliquam omnis repellendus fugiat
+                        reiciendis aspernatur quod, nobis amet.
+                        Sint tempore deleniti autem tempora consequatur accusantium. Reiciendis sit debitis ipsam nulla
+                        cumque. Tempore rem iure quia. Consectetur est voluptatum culpa maiores odit odio quas ex a!
+                        Iste, ad eius.</p>
+                    <p class="text-monospace">10/02/2022, 08: 10</p>
+                    <h4 class="mb-5">price: 5€</h4>
+                    <h6 class="bg-light py-3 pl-2">Server Details</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item pl-2"><strong>id:</strong> 198329182398123</li>
+                        <li class="list-group-item pl-2"><strong>createdAt:</strong> A second item</li>
+                        <li class="list-group-item pl-2"><strong>updatedAt:</strong> A third item</li>
+                    </ul>
+                    <button class="btn btn-success mt-4">Edit Event</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const eventId = new URLSearchParams(window.location.search).get("eventId")
+
+        window.onload = async () => {
+            const url = "https://striveschool-api.herokuapp.com/api/product/"
+            const response = await fetch(url + eventId)
+            const eventObj = await response.json()
+
+            const { name, price, time, description, _id, createdAt, updatedAt } = eventObj
+
+            const container = document.getElementById("eventDetails")
+
+            container.innerHTML = `     <h1 class="font-weight-bold">${name}</h1>
+                                        <p>${description}</p>
+                                        <p class="text-monospace">${new Date(time).toLocaleString()}</p>
+                                        <h4 class="mb-5">Price: ${price}€</h4>
+                                        <h6 class="bg-light py-3 pl-2">Server Details</h6>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item pl-2"><strong>id:</strong> ${_id}</li>
+                                            <li class="list-group-item pl-2"><strong>createdAt:</strong> ${createdAt}</li>
+                                            <li class="list-group-item pl-2"><strong>updatedAt:</strong> ${updatedAt}</li>
+                                        </ul>
+                                        <button class="btn btn-success mt-4" onclick="handleBtnClick()">Edit Event</button>
+            `
+            console.log("HEy", _id)
+        }
+
+
+        const handleBtnClick = () => {
+            window.location.assign("./backoffice.html?eventId=" + eventId)
+        }
+    </script>
+</body>
+
+</html>

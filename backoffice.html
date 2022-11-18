@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <title>CRUD Agenda</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid px-5">
+            <a class="navbar-brand" href="#">CRUD Agenda</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./backoffice.html">Backoffice</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="mb-3 d-inline-block">Backoffice</h2>
+                <h5 id="subtitle" class=" d-inline-block">— Create An Event</h5>
+                <div class="spinner-border text-primary d-none" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">Event Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Insert the event name" required>
+                        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.</small> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Event Description</label>
+                        <textarea type="text" class="form-control" id="description"
+                            placeholder="Insert a description of the event" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Event Price</label>
+                        <input type="number" class="form-control" id="price" placeholder="Insert a price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Event Date and Time </label>
+                        <input type="datetime-local" class="form-control" id="time" required>
+                    </div>
+
+                    <button type="reset" class="btn btn-light">Reset</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                    <button type="button" class="btn btn-danger float-right d-none" onclick="handleDelete()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                            class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path
+                                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        const eventId = new URLSearchParams(window.location.search).get("eventId")
+
+        const endpoint = eventId ? "https://striveschool-api.herokuapp.com/api/agenda/" + eventId : "https://striveschool-api.herokuapp.com/api/agenda/"
+        const method = eventId ? "PUT" : "POST"
+
+
+        window.onload = async () => {
+
+            const submitBtn = document.querySelector("button[type='submit']")
+
+            if (eventId) {
+                document.getElementById("subtitle").innerText = " — Edit Event"
+
+                const response = await fetch(endpoint)
+                const { name, price, time, description } = await response.json()
+
+                document.getElementById("name").value = name
+                document.getElementById("description").value = description
+                document.getElementById("price").value = price
+                document.getElementById("time").value = time.split(".")[0]
+
+
+                submitBtn.innerText = "Edit Event"
+                submitBtn.classList.remove("btn-primary")
+                submitBtn.classList.add("btn-success")
+
+
+                const deleteBtn = document.querySelector(".btn-danger")
+                deleteBtn.classList.remove("d-none")
+            }
+
+        }
+        // API MODEL
+        //  {
+        //         "name": "Test Event l123m",
+        //         "description": "lorem ipsum",
+        //         "price": 45,
+        //         "time": "2022-03-26T12:39:00.000Z"
+        //     }
+        const handleSubmit = async event => {
+            event.preventDefault()
+
+            isLoading(true)
+
+            const myEvent = {
+                name: document.getElementById("name").value,
+                description: document.getElementById("description").value,
+                price: document.getElementById("price").value,
+                time: document.getElementById("time").value,
+            }
+
+            console.log(myEvent)
+
+            const response = await fetch(endpoint, {
+                method,
+                body: JSON.stringify(myEvent),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            const bodyResp = await response.json()
+            isLoading(false)
+
+            if (eventId) {
+                alert("Event with the id of: " + bodyResp._id + " got edited successfully")
+            } else { alert("Event created successfully with the id of: " + bodyResp._id) }
+        }
+
+        const isLoading = (loading) => {
+
+            const spinner = document.querySelector(".spinner-border")
+
+            if (loading) {
+                spinner.classList.remove("d-none")
+            } else {
+                spinner.classList.add("d-none")
+            }
+
+        }
+
+        const handleDelete = async () => {
+            console.log("tried to delete")
+
+            const hasAccepted = confirm("do you really want to delete this?")
+
+            if (hasAccepted) {
+
+                const response = await fetch(endpoint, {
+                    method: "DELETE"
+                })
+
+                const deletedObj = await response.json()
+
+                alert("Event " + deletedObj.name + " deleted successfully")
+                window.location.assign("/")
+            }
+        }
+
+    </script>
+</body>
+
+</html>
